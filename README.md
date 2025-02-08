@@ -1,18 +1,13 @@
 # Nebulex.Adapters.Cachex
 > A [Nebulex][Nebulex] adapter for [Cachex][Cachex].
 
-[Nebulex]: https://github.com/cabol/nebulex
-[Cachex]: https://github.com/whitfin/cachex
+[Nebulex]: http://github.com/elixir-nebulex/nebulex
+[Cachex]: http://github.com/whitfin/cachex
 
-![CI](https://github.com/cabol/nebulex_adapters_cachex/workflows/CI/badge.svg)
-[![Coverage Status](https://img.shields.io/coveralls/cabol/nebulex_adapters_cachex.svg)](https://coveralls.io/github/cabol/nebulex_adapters_cachex)
-[![Hex Version](https://img.shields.io/hexpm/v/nebulex_adapters_cachex.svg)](https://hex.pm/packages/nebulex_adapters_cachex)
-[![Docs](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/nebulex_adapters_cachex)
-
-See the [online documentation](https://hexdocs.pm/nebulex_adapters_cachex/)
-for more information.
-
-**NOTE:** This adapter only supports Nebulex v2.0.0 onwards.
+![CI](http://github.com/elixir-nebulex/nebulex_adapters_cachex/workflows/CI/badge.svg)
+[![Codecov](http://codecov.io/gh/elixir-nebulex/nebulex_adapters_cachex/branch/v3.0.0-dev/graph/badge.svg)](http://codecov.io/gh/elixir-nebulex/nebulex_adapters_cachex/branch/v3.0.0-dev/graph/badge.svg)
+[![Hex Version](http://img.shields.io/hexpm/v/nebulex_adapters_cachex.svg)](http://hex.pm/packages/nebulex_adapters_cachex)
+[![Documentation](http://img.shields.io/badge/Documentation-ff69b4)](http://hexdocs.pm/nebulex_adapters_cachex)
 
 ## Installation
 
@@ -21,10 +16,13 @@ Add `:nebulex_adapters_cachex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:nebulex_adapters_cachex, "~> 2.1"}
+    {:nebulex_adapters_cachex, "~> 3.0.0-rc.1"}
   ]
 end
 ```
+
+See the [online documentation](http://hexdocs.pm/nebulex_adapters_cachex/)
+for more information.
 
 ## Usage
 
@@ -43,7 +41,6 @@ environment, usually defined in your `config/config.exs`:
 
 ```elixir
 config :my_app, MyApp.Cache,
-  limit: 1_000_000,
   stats: true,
   ...
 ```
@@ -82,22 +79,14 @@ defp cachex_opts do
 
   [
     expiration: expiration(
-      # default record expiration
-      default: :timer.seconds(60),
-
       # how often cleanup should occur
       interval: :timer.seconds(30),
 
+      # default record expiration
+      default: :timer.seconds(60),
+
       # whether to enable lazy checking
       lazy: true
-    ),
-
-    # complex limit
-    limit: limit(
-      size: 500,
-      policy: Cachex.Policy.LRW,
-      reclaim: 0.5,
-      options: []
     ),
 
     ...
@@ -105,19 +94,16 @@ defp cachex_opts do
 end
 ```
 
-> See [Cachex.start_link/1][cachex_start_link] for more information
+> See [Cachex.start_link/2][cachex_start_link] for more information
   about the options.
 
-[cachex_start_link]: https://hexdocs.pm/cachex/Cachex.html#start_link/1
+[cachex_start_link]: http://hexdocs.pm/cachex/Cachex.html#start_link/2
 
 ## Distributed caching topologies
 
-In the same way we use the distributed adapters and the multilevel one to
-create distributed topologies, we can also do the same but instead of using
-the built-in local adapter using Cachex.
-
-For example, let's define a multi-level cache (near cache topology), where
-the L1 is a local cache using Cachex and the L2 is a partitioned cache.
+Using the distributed adapters with `Cachex` as a primary storage is possible.
+  For example, let's define a multi-level cache (near cache topology), where
+  the L1 is a local cache using Cachex and the L2 is a partitioned cache.
 
 ```elixir
 defmodule MyApp.NearCache do
@@ -146,27 +132,27 @@ And the configuration may look like:
 config :my_app, MyApp.NearCache,
   model: :inclusive,
   levels: [
-    {MyApp.NearCache.L1, [limit: 100_000]},
-    {MyApp.NearCache.L2, primary: [limit: 1_000_000]}
+    {MyApp.NearCache.L1, []},
+    {MyApp.NearCache.L2, primary: [transactions: true]}
   ]
 ```
 
-> **NOTE:** You could also use [NebulexRedisAdapter][nbx_redis_adapter] for L2,
-  it would be matter of changing the adapter for the L2 and the configuration
-  for set up Redis adapter.
+> **NOTE:** You could also use [Nebulex.Adapters.Redis][nbx_redis_adapter]
+> for L2, it would be matter of changing the adapter for the L2 and the
+> configuration for set up Redis adapter.
 
-See [Nebulex examples](https://github.com/cabol/nebulex_examples). You will
-find examples for all different topologies, even using other adapters like
-Redis; for all examples you just have to replace `Nebulex.Adapters.Local`
+See [Nebulex examples](http://github.com/elixir-nebulex/nebulex_examples).
+You will find examples for all different topologies, even using other adapters
+like Redis; for all examples you just have to replace `Nebulex.Adapters.Local`
 by `Nebulex.Adapters.Cachex`.
 
-[nbx_redis_adapter]: https://github.com/cabol/nebulex_redis_adapter
+[nbx_redis_adapter]: http://github.com/elixir-nebulex/nebulex_redis_adapter
 
 ## Testing
 
-Since `Nebulex.Adapters.Cachex` uses the support modules and shared tests
-from `Nebulex` and by default its test folder is not included in the Hex
-dependency, the following steps are required for running the tests.
+Since this adapter uses support modules and shared tests from `Nebulex`,
+but the test folder is not included in the Hex dependency, the following
+steps are required to run the tests.
 
 First of all, make sure you set the environment variable `NEBULEX_PATH`
 to `nebulex`:
@@ -204,7 +190,7 @@ You will find the coverage report within `cover/excoveralls.html`.
 
 ## Benchmarks
 
-Benchmarks were added using [benchee](https://github.com/PragTob/benchee), and
+Benchmarks were added using [benchee](http://github.com/PragTob/benchee), and
 they are located within the directory [benchmarks](./benchmarks).
 
 To run the benchmarks:
@@ -217,16 +203,16 @@ MIX_ENV=test mix run benchmarks/benchmark.exs
 
 Contributions to Nebulex are very welcome and appreciated!
 
-Use the [issue tracker](https://github.com/cabol/nebulex_adapters_cachex/issues)
+Use the [issue tracker](http://github.com/elixir-nebulex/nebulex_adapters_cachex/issues)
 for bug reports or feature requests. Open a
-[pull request](https://github.com/cabol/nebulex_adapters_cachex/pulls)
+[pull request](http://github.com/elixir-nebulex/nebulex_adapters_cachex/pulls)
 when you are ready to contribute.
 
 When submitting a pull request you should not update the
 [CHANGELOG.md](CHANGELOG.md), and also make sure you test your changes
 thoroughly, include unit tests alongside new or changed code.
 
-Before to submit a PR it is highly recommended to run `mix check` and ensure
+Before to submit a PR it is highly recommended to run `mix test.ci` and ensure
 all checks run successfully.
 
 ## Copyright and License
