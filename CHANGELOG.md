@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.0.0-rc.1](https://github.com/elixir-nebulex/nebulex/tree/v3.0.0-rc.1) (2025-05-01)
+> [Full Changelog](https://github.com/elixir-nebulex/nebulex/compare/v2.1.1...v3.0.0-rc.1)
+
+**Closed issues:**
+
+- Upgrade to Nebulex v3
+  [#7](https://github.com/elixir-nebulex/nebulex_adapters_cachex/issues/7)
+
 ## [v2.1.1](https://github.com/cabol/nebulex_adapters_cachex/tree/v2.1.1) (2023-09-19)
 
 [Full Changelog](https://github.com/cabol/nebulex_adapters_cachex/compare/v2.1.0...v2.1.1)

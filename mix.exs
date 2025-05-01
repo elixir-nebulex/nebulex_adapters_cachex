@@ -43,7 +43,6 @@ defmodule NebulexAdaptersCachex.MixProject do
   defp deps do
     [
       nebulex_dep(),
-      {:nimble_options, "~> 0.5 or ~> 1.0"},
       {:cachex, "~> 4.0"},
       {:telemetry, "~> 0.4 or ~> 1.0", optional: true},
 
