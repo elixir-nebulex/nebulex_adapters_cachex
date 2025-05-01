@@ -1,28 +1,27 @@
 defmodule NebulexAdaptersCachex.MixProject do
   use Mix.Project
 
-  @source_url "https://github.com/cabol/nebulex_adapters_cachex"
-  @version "2.1.1"
-  @nbx_tag "2.5.2"
-  @nbx_vsn "2.5"
+  @source_url "http://github.com/elixir-nebulex/nebulex_adapters_cachex"
+  @version "3.0.0-rc.1"
+  @nbx_tag "3.0.0-rc.1"
+  @nbx_vsn "3.0.0-rc.1"
 
   def project do
     [
       app: :nebulex_adapters_cachex,
       version: @version,
-      elixir: "~> 1.9",
-      elixirc_paths: elixirc_paths(Mix.env()),
+      elixir: "~> 1.14",
       aliases: aliases(),
       deps: deps(),
 
       # Testing
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
-        check: :test,
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
-        "coveralls.html": :test
+        "coveralls.html": :test,
+        "test.ci": :test
       ],
 
       # Dialyzer
@@ -41,38 +40,33 @@ defmodule NebulexAdaptersCachex.MixProject do
     ]
   end
 
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_), do: ["lib"]
-
-  def application do
-    []
-  end
-
   defp deps do
     [
       nebulex_dep(),
-      {:cachex, "~> 3.6"},
+      {:nimble_options, "~> 0.5 or ~> 1.0"},
+      {:cachex, "~> 4.0"},
       {:telemetry, "~> 0.4 or ~> 1.0", optional: true},
 
       # Test & Code Analysis
-      {:excoveralls, "~> 0.17", only: :test},
+      {:excoveralls, "~> 0.18", only: :test},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
-      {:stream_data, "~> 0.6", only: [:dev, :test]},
+      {:mimic, "~> 1.7", only: :test},
+      {:stream_data, "~> 1.1", only: [:dev, :test]},
 
       # Benchmark Test
-      {:benchee, "~> 1.1", only: :test},
-      {:benchee_html, "~> 1.0", only: :test},
+      {:benchee, "~> 1.3", only: [:dev, :test]},
+      {:benchee_html, "~> 1.0", only: [:dev, :test]},
 
       # Docs
-      {:ex_doc, "~> 0.30", only: [:dev, :test], runtime: false}
+      {:ex_doc, "~> 0.36", only: [:dev, :test], runtime: false}
     ]
   end
 
   defp nebulex_dep do
     if path = System.get_env("NEBULEX_PATH") do
-      {:nebulex, "~> #{@nbx_tag}", path: path}
+      {:nebulex, path: path}
     else
       {:nebulex, "~> #{@nbx_vsn}"}
     end
@@ -82,9 +76,10 @@ defmodule NebulexAdaptersCachex.MixProject do
     [
       "nbx.setup": [
         "cmd rm -rf nebulex",
-        "cmd git clone --depth 1 --branch v#{@nbx_tag} https://github.com/cabol/nebulex"
+        "cmd git clone --depth 1 --branch v#{@nbx_tag} http://github.com/elixir-nebulex/nebulex"
       ],
-      check: [
+      "test.ci": [
+        "deps.unlock --check-unused",
         "compile --warnings-as-errors",
         "format --check-formatted",
         "credo --strict",
@@ -98,9 +93,13 @@ defmodule NebulexAdaptersCachex.MixProject do
   defp package do
     [
       name: :nebulex_adapters_cachex,
-      maintainers: ["Carlos Bolanos"],
+      maintainers: [
+        "Carlos Bolanos",
+        "Felipe Ripoll"
+      ],
       licenses: ["MIT"],
-      links: %{"GitHub" => @source_url}
+      links: %{"GitHub" => @source_url},
+      files: ~w(lib .formatter.exs mix.exs README* CHANGELOG* LICENSE*)
     ]
   end
 

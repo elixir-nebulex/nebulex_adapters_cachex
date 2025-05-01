@@ -37,3 +37,5 @@ erl_crash.dump
 /priv
 .sobelow*
 /nebulex
+Elixir*
+*.coverdata

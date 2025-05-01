@@ -8,11 +8,8 @@ defmodule Cache do
 end
 
 benchmarks = %{
-  "get" => fn input ->
-    Cache.get(input)
-  end,
-  "get_all" => fn input ->
-    Cache.get_all([input, "foo", "bar"])
+  "fetch" => fn input ->
+    Cache.fetch(input)
   end,
   "put" => fn input ->
     Cache.put(input, input)
@@ -35,8 +32,8 @@ benchmarks = %{
   "has_key?" => fn input ->
     Cache.has_key?(input)
   end,
-  "size" => fn _input ->
-    Cache.size()
+  "count_all" => fn _input ->
+    Cache.count_all()
   end,
   "ttl" => fn input ->
     Cache.ttl(input)
@@ -50,8 +47,8 @@ benchmarks = %{
   "update" => fn input ->
     Cache.update(input, 1, &Kernel.+(&1, 1))
   end,
-  "all" => fn _input ->
-    Cache.all()
+  "get_all" => fn input ->
+    Cache.get_all(in: [input, "foo", "bar"])
   end
 }
 
