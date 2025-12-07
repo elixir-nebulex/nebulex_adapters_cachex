@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.0.0-rc.2](https://github.com/elixir-nebulex/nebulex/tree/v3.0.0-rc.2) (2025-12-07)
+> [Full Changelog](https://github.com/elixir-nebulex/nebulex/compare/v3.0.0-rc.1...v3.0.0-rc.2)
+
+### Enhancements
+
+- Enhanced documentation with detailed Query API, Transactions, and Stats
+  sections.
+- Overall documentation polish.
+
 ## [v3.0.0-rc.1](https://github.com/elixir-nebulex/nebulex/tree/v3.0.0-rc.1) (2025-05-01)
 > [Full Changelog](https://github.com/elixir-nebulex/nebulex/compare/v2.1.1...v3.0.0-rc.1)
 

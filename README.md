@@ -22,13 +22,14 @@ Add `:nebulex_adapters_cachex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:nebulex_adapters_cachex, "~> 3.0.0-rc.1"}
+    {:nebulex_adapters_cachex, "~> 3.0.0-rc.2"},
+    {:telemetry, "~> 0.4 or ~> 1.0"}    # For observability/telemetry support
   ]
 end
 ```
 
-See the [online documentation](http://hexdocs.pm/nebulex_adapters_cachex/)
-for more information.
+The `:telemetry` dependency is optional but highly recommended for observability
+and monitoring cache operations.
 
 ## Usage
 

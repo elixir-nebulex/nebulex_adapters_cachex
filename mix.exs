@@ -2,9 +2,7 @@ defmodule NebulexAdaptersCachex.MixProject do
   use Mix.Project
 
   @source_url "http://github.com/elixir-nebulex/nebulex_adapters_cachex"
-  @version "3.0.0-rc.1"
-  # @nbx_tag "3.0.0-rc.1"
-  # @nbx_vsn "3.0.0-rc.1"
+  @version "3.0.0-rc.2"
 
   def project do
     [
@@ -73,7 +71,7 @@ defmodule NebulexAdaptersCachex.MixProject do
     if path = System.get_env("NEBULEX_PATH") do
       {:nebulex, path: path}
     else
-      {:nebulex, github: "elixir-nebulex/nebulex"}
+      {:nebulex, @version}
     end
   end
 
