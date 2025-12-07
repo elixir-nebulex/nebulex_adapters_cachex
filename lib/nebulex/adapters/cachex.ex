@@ -2,12 +2,19 @@ defmodule Nebulex.Adapters.Cachex do
   @moduledoc """
   Nebulex adapter for [Cachex][cachex].
 
+  This adapter provides a Nebulex interface on top of Cachex, a powerful
+  in-memory caching library for Elixir. It combines Nebulex's unified caching
+  API with Cachex's rich feature set including transactions, hooks, expiration,
+  and statistics. Use this adapter when you need a feature-rich local cache or
+  as a building block for distributed caching topologies.
+
   [cachex]: http://hexdocs.pm/cachex/Cachex.html
 
   ## Options
 
-  Since Nebulex is just a wrapper on top of Cachex, the options are the same as
-  [Cachex.start_link/2][cachex_start_link].
+  This adapter supports all Cachex configuration options. The options are passed
+  directly to [Cachex.start_link/2][cachex_start_link], allowing you to leverage
+  Cachex's full feature set including expiration, hooks, limits, and warmers.
 
   [cachex_start_link]: https://hexdocs.pm/cachex/Cachex.html#start_link/2
 
@@ -115,8 +122,8 @@ defmodule Nebulex.Adapters.Cachex do
         ]
 
   > **NOTE:** You could also use [Nebulex.Adapters.Redis][nbx_redis_adapter] for
-    L2, it would be matter of changing the adapter for the L2 and the
-    configuration to set up Redis adapter.
+    L2, it would be a matter of changing the adapter for the L2 and the
+    configuration to set up the Redis adapter.
 
   [nbx_redis_adapter]: https://github.com/elixir-nebulex/nebulex_redis_adapter
 
@@ -124,6 +131,83 @@ defmodule Nebulex.Adapters.Cachex do
   You will find examples for all different topologies, even using other adapters
   like Redis; for all examples using the `Nebulex.Adapters.Local` adapter,
   you can replace it by `Nebulex.Adapters.Cachex`.
+
+  ## Query API
+
+  The adapter supports querying cached entries using Cachex's query syntax or
+  explicit key lists.
+
+  ### Pattern-based queries
+
+  Use Cachex query syntax for pattern matching:
+
+      # Get all entries
+      MyApp.Cache.get_all!()
+
+      # Count all entries
+      MyApp.Cache.count_all!()
+
+      # Delete all entries
+      MyApp.Cache.delete_all!()
+
+      # Delete expired entries
+      MyApp.Cache.delete_all!(:expired)
+
+      # Stream entries for large datasets
+      MyApp.Cache.stream!() |> Enum.take(100)
+
+  ### Explicit key queries
+
+  Query specific keys using the `in: keys` syntax:
+
+      # Get multiple keys
+      MyApp.Cache.get_all!(in: ["key1", "key2", "key3"])
+
+      # Count specific keys
+      MyApp.Cache.count_all!(in: ["key1", "key2"])
+
+      # Delete specific keys
+      MyApp.Cache.delete_all!(in: ["key1", "key2"])
+
+  ## Transactions
+
+  The adapter provides full transaction support through Cachex's locking
+  mechanism, ensuring atomic operations across multiple keys.
+
+      MyApp.Cache.transaction(
+        fn ->
+          value = MyApp.Cache.get!("counter")
+          MyApp.Cache.put!("counter", value + 1)
+          MyApp.Cache.put!("last_updated", DateTime.utc_now())
+        end,
+        keys: ["counter", "last_updated"]
+      )
+
+  Transactions automatically handle locking and isolation for the specified keys.
+
+  ## Stats and Monitoring
+
+  Enable statistics collection by setting `stats: true` in your configuration
+  (enabled by default):
+
+      config :my_app, MyApp.Cache,
+        stats: true
+
+  Retrieve statistics:
+
+      # Get all stats
+      iex> MyApp.Cache.info!(:stats)
+      %{
+        calls: %{get: 10, put: 5, delete: 2},
+        evictions: 0,
+        expirations: 1,
+        hit_rate: 80.0,
+        hits: 8,
+        misses: 2,
+        ...
+      }
+
+  See `Cachex.Stats` for detailed statistics information.
   """
 
   # Provide Cache Implementation

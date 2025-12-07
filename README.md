@@ -5,9 +5,15 @@
 [Cachex]: http://github.com/whitfin/cachex
 
 ![CI](http://github.com/elixir-nebulex/nebulex_adapters_cachex/workflows/CI/badge.svg)
-[![Codecov](http://codecov.io/gh/elixir-nebulex/nebulex_adapters_cachex/branch/v3.0.0-dev/graph/badge.svg)](http://codecov.io/gh/elixir-nebulex/nebulex_adapters_cachex/branch/v3.0.0-dev/graph/badge.svg)
+[![Codecov](http://codecov.io/gh/elixir-nebulex/nebulex_adapters_cachex/graph/badge.svg)](http://codecov.io/gh/elixir-nebulex/nebulex_adapters_cachex/branch/graph/badge.svg)
 [![Hex Version](http://img.shields.io/hexpm/v/nebulex_adapters_cachex.svg)](http://hex.pm/packages/nebulex_adapters_cachex)
 [![Documentation](http://img.shields.io/badge/Documentation-ff69b4)](http://hexdocs.pm/nebulex_adapters_cachex)
+
+## About
+
+This adapter provides a Nebulex interface on top of [Cachex][Cachex], a powerful
+in-memory caching library for Elixir. It combines Nebulex's unified caching API
+with Cachex's rich feature set.
 
 ## Installation
 
@@ -26,7 +32,7 @@ for more information.
 
 ## Usage
 
-You can define a cache using Cachex as follows:
+Define your cache:
 
 ```elixir
 defmodule MyApp.Cache do
@@ -36,97 +42,64 @@ defmodule MyApp.Cache do
 end
 ```
 
-Where the configuration for the cache must be in your application
-environment, usually defined in your `config/config.exs`:
+Configure in your `config/config.exs`:
 
 ```elixir
 config :my_app, MyApp.Cache,
-  stats: true,
-  ...
+  stats: true
 ```
 
-If your application was generated with a supervisor (by passing `--sup`
-to `mix new`) you will have a `lib/my_app/application.ex` file containing
-the application start callback that defines and starts your supervisor.
-You just need to edit the `start/2` function to start the cache as a
-supervisor on your application's supervisor:
+Add to your application supervision tree:
 
 ```elixir
 def start(_type, _args) do
   children = [
     {MyApp.Cache, []},
+    # ... other children
   ]
 
-  ...
+  Supervisor.start_link(children, strategy: :one_for_one)
 end
 ```
 
-Since Cachex uses macros for some configuration options, you could also
-pass the options in runtime when the cache is started, either by calling
-`MyApp.Cache.start_link/1` directly, or in your app supervision tree:
+The adapter supports all Cachex options. See [Cachex.start_link/2][cachex_start_link]
+for configuration options including expiration, hooks, limits, and warmers.
 
-```elixir
-def start(_type, _args) do
-  children = [
-    {MyApp.Cache, cachex_opts()},
-  ]
-
-  ...
-end
-
-defp cachex_opts do
-  import Cachex.Spec
-
-  [
-    expiration: expiration(
-      # how often cleanup should occur
-      interval: :timer.seconds(30),
-
-      # default record expiration
-      default: :timer.seconds(60),
-
-      # whether to enable lazy checking
-      lazy: true
-    ),
-
-    ...
-  ]
-end
-```
-
-> See [Cachex.start_link/2][cachex_start_link] for more information
-  about the options.
+For more details and examples, see the [module documentation][docs].
 
 [cachex_start_link]: http://hexdocs.pm/cachex/Cachex.html#start_link/2
+[docs]: http://hexdocs.pm/nebulex_adapters_cachex/Nebulex.Adapters.Cachex.html
 
-## Distributed caching topologies
+## Distributed Caching Topologies
 
-Using the distributed adapters with `Cachex` as a primary storage is possible.
-  For example, let's define a multi-level cache (near cache topology), where
-  the L1 is a local cache using Cachex and the L2 is a partitioned cache.
+The Cachex adapter works seamlessly with Nebulex's distributed adapters. Use it
+as a local cache in multi-level topologies or as primary storage for partitioned
+caches.
+
+**Example: Multi-level cache (near cache pattern)**
 
 ```elixir
 defmodule MyApp.NearCache do
   use Nebulex.Cache,
-    otp_app: :nebulex,
+    otp_app: :my_app,
     adapter: Nebulex.Adapters.Multilevel
 
   defmodule L1 do
     use Nebulex.Cache,
-      otp_app: :nebulex,
+      otp_app: :my_app,
       adapter: Nebulex.Adapters.Cachex
   end
 
   defmodule L2 do
     use Nebulex.Cache,
-      otp_app: :nebulex,
+      otp_app: :my_app,
       adapter: Nebulex.Adapters.Partitioned,
       primary_storage_adapter: Nebulex.Adapters.Cachex
   end
 end
 ```
 
-And the configuration may look like:
+Configuration:
 
 ```elixir
 config :my_app, MyApp.NearCache,
@@ -137,16 +110,12 @@ config :my_app, MyApp.NearCache,
   ]
 ```
 
-> **NOTE:** You could also use [Nebulex.Adapters.Redis][nbx_redis_adapter]
-> for L2, it would be matter of changing the adapter for the L2 and the
-> configuration for set up Redis adapter.
-
-See [Nebulex examples](http://github.com/elixir-nebulex/nebulex_examples).
-You will find examples for all different topologies, even using other adapters
-like Redis; for all examples you just have to replace `Nebulex.Adapters.Local`
-by `Nebulex.Adapters.Cachex`.
+You can also use [Nebulex.Adapters.Redis][nbx_redis_adapter] for L2 to add
+persistence. See the [module documentation][docs] and
+[Nebulex examples][nbx_examples] for more topologies.
 
 [nbx_redis_adapter]: http://github.com/elixir-nebulex/nebulex_redis_adapter
+[nbx_examples]: http://github.com/elixir-nebulex/nebulex_examples
 
 ## Testing
 
@@ -161,7 +130,7 @@ to `nebulex`:
 export NEBULEX_PATH=nebulex
 ```
 
-Second, make sure you fetch `:nebulex` dependency directly from GtiHub
+Second, make sure you fetch `:nebulex` dependency directly from GitHub
 by running:
 
 ```
@@ -212,11 +181,11 @@ When submitting a pull request you should not update the
 [CHANGELOG.md](CHANGELOG.md), and also make sure you test your changes
 thoroughly, include unit tests alongside new or changed code.
 
-Before to submit a PR it is highly recommended to run `mix test.ci` and ensure
+Before submitting a PR it is highly recommended to run `mix test.ci` and ensure
 all checks run successfully.
 
 ## Copyright and License
 
 Copyright (c) 2020, Carlos Bolaños.
 
-Nebulex.Adapters.Cachex source code is licensed under the [MIT License](LICENSE).
+Nebulex.Adapters.Cachex source code is licensed under the [MIT License](LICENSE.md).

@@ -64,21 +64,23 @@ defmodule Nebulex.Adapters.Cachex.TransactionTest do
     end
 
     test "error: internal error", %{cache: cache} do
-      assert cache.transaction(fn ->
-               :ok = cache.put!(1, 11)
+      assert {:error,
+              %Nebulex.Error{
+                reason: reason,
+                module: Nebulex.Error,
+                metadata: []
+              }} =
+               cache.transaction(fn ->
+                 :ok = cache.put!(1, 11)
 
-               11 = cache.fetch!(1)
+                 11 = cache.fetch!(1)
 
-               :ok = cache.delete!(1)
+                 :ok = cache.delete!(1)
 
-               :ok = cache.get(1)
-             end) ==
-               {:error,
-                %Nebulex.Error{
-                  reason: "no match of right hand side value: {:ok, nil}",
-                  module: Nebulex.Error,
-                  metadata: []
-                }}
+                 :ok = cache.get(1)
+               end)
+
+      assert reason =~ "no match of right hand side value"
     end
   end
 

@@ -16,13 +16,7 @@ defmodule NebulexAdaptersCachex.MixProject do
 
       # Testing
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
-        "coveralls.html": :test,
-        "test.ci": :test
-      ],
+      test_ignore_filters: [~r{test/(shared|support)/.*\.exs}],
 
       # Dialyzer
       dialyzer: dialyzer(),
@@ -40,6 +34,18 @@ defmodule NebulexAdaptersCachex.MixProject do
     ]
   end
 
+  def cli do
+    [
+      preferred_envs: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        "test.ci": :test
+      ]
+    ]
+  end
+
   defp deps do
     [
       nebulex_dep(),
@@ -50,16 +56,16 @@ defmodule NebulexAdaptersCachex.MixProject do
       {:excoveralls, "~> 0.18", only: :test},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
-      {:mimic, "~> 1.7", only: :test},
-      {:stream_data, "~> 1.1", only: [:dev, :test]},
+      {:sobelow, "~> 0.14", only: [:dev, :test], runtime: false},
+      {:mimic, "~> 2.2", only: :test},
+      {:stream_data, "~> 1.2", only: [:dev, :test]},
 
       # Benchmark Test
-      {:benchee, "~> 1.3", only: [:dev, :test]},
+      {:benchee, "~> 1.5", only: [:dev, :test]},
       {:benchee_html, "~> 1.0", only: [:dev, :test]},
 
       # Docs
-      {:ex_doc, "~> 0.36", only: [:dev, :test], runtime: false}
+      {:ex_doc, "~> 0.39", only: [:dev, :test], runtime: false}
     ]
   end
 
