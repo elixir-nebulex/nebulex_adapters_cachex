@@ -1,17 +1,19 @@
 defmodule Nebulex.Adapters.Cachex.LocalErrorTest do
   use ExUnit.Case, async: true
-  use Mimic
 
   # Inherit error tests
   use Nebulex.Cache.KVErrorTest
   use Nebulex.Cache.KVExpirationErrorTest
 
+  import Mimic, only: [stub: 3, verify_on_exit!: 1]
   import Nebulex.CacheCase, only: [setup_with_dynamic_cache: 2]
   import Nebulex.Utils, only: [wrap_error: 2]
 
   alias Nebulex.Adapters.Cachex.TestCache.Local, as: Cache
 
   @cache_name __MODULE__.Cachex
+
+  setup :verify_on_exit!
 
   setup do
     Cachex.Router

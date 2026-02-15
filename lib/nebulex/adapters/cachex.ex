@@ -8,7 +8,7 @@ defmodule Nebulex.Adapters.Cachex do
   and statistics. Use this adapter when you need a feature-rich local cache or
   as a building block for distributed caching topologies.
 
-  [cachex]: http://hexdocs.pm/cachex/Cachex.html
+  [cachex]: https://hexdocs.pm/cachex/Cachex.html
 
   ## Options
 
@@ -108,7 +108,7 @@ defmodule Nebulex.Adapters.Cachex do
           use Nebulex.Cache,
             otp_app: :nebulex,
             adapter: Nebulex.Adapters.Partitioned,
-            primary_storage_adapter: Nebulex.Adapters.Cachex
+            adapter_opts: [primary_storage_adapter: Nebulex.Adapters.Cachex]
         end
       end
 
@@ -229,7 +229,6 @@ defmodule Nebulex.Adapters.Cachex do
   alias Cachex.Query
   alias Cachex.Services.Locksmith
   alias Nebulex.Adapter
-  alias Nebulex.Adapter.Transaction.Options, as: TxnOptions
   alias Nebulex.Cache.Options, as: NbxOptions
 
   # Nebulex options
@@ -392,17 +391,20 @@ defmodule Nebulex.Adapters.Cachex do
 
   @impl true
   def ttl(%{cachex_name: name}, key, _opts) do
-    # FIXME: This is a workaround due to Cachex nil returned ambiguity
+    # TODO(cachex-ttl): Workaround for Cachex nil ambiguity. Remove this once
+    # Cachex can clearly distinguish "key not found" from "no TTL set".
     Cachex.transaction(name, [key], fn worker ->
       with {:ok, nil} <- Cachex.ttl(worker, key),
-           {:ok, bool} <- Cachex.exists?(worker, key) do
-        if bool do
-          # Key does exist and hasn't a TTL associated with it
-          {:ok, :infinity}
-        else
+           {:ok, true} <- Cachex.exists?(worker, key) do
+        # Key does exist and hasn't a TTL associated with it
+        {:ok, :infinity}
+      else
+        {:ok, false} ->
           # Key does not exist
           wrap_error Nebulex.KeyError, key: key, cache: worker, reason: :not_found
-        end
+
+        other ->
+          other
       end
     end)
     |> handle_response(true)
@@ -424,7 +426,9 @@ defmodule Nebulex.Adapters.Cachex do
 
   @impl true
   def update_counter(%{cachex_name: name}, key, amount, default, ttl, _opts) do
-    # FIXME: This is a workaround since Cachex does not support `:ttl` option
+    # TODO(cachex-update-counter-ttl): Workaround because Cachex.incr/4 does
+    # not support setting TTL atomically. Remove this when Cachex provides TTL
+    # support for counter updates.
     Cachex.transaction(name, [key], fn worker ->
       with {:ok, exists?} <- Cachex.exists?(worker, key) do
         do_update_counter(worker, key, amount, default, ttl, exists?)
@@ -526,7 +530,7 @@ defmodule Nebulex.Adapters.Cachex do
 
   @impl true
   def transaction(%{cachex_name: name}, fun, opts) do
-    opts = TxnOptions.validate!(opts)
+    opts = Keyword.validate!(opts, keys: [])
     keys = Keyword.fetch!(opts, :keys)
 
     name

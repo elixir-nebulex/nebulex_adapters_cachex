@@ -1,6 +1,5 @@
 defmodule Nebulex.Adapters.Cachex.StatsTest do
   use ExUnit.Case, async: true
-  use Mimic
 
   defmodule Cache do
     @moduledoc false

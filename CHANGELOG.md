@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.0.0](https://github.com/elixir-nebulex/nebulex/tree/v3.0.0) (2026-02-15)
+> [Full Changelog](https://github.com/elixir-nebulex/nebulex/compare/v3.0.0-rc.2...v3.0.0)
+
+### Enhancements
+
+- Updated project dependencies to their latest compatible versions.
+- Improved and refreshed documentation across the adapter (README and module
+  docs), including clearer usage examples and configuration guidance.
+- Standardized documentation links to use secure `https://` URLs.
+- Applied minor internal improvements and maintenance refactors to keep the
+  codebase cleaner and easier to maintain.
+
 ## [v3.0.0-rc.2](https://github.com/elixir-nebulex/nebulex/tree/v3.0.0-rc.2) (2025-12-07)
 > [Full Changelog](https://github.com/elixir-nebulex/nebulex/compare/v3.0.0-rc.1...v3.0.0-rc.2)
 

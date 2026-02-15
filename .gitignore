@@ -39,3 +39,6 @@ erl_crash.dump
 /nebulex
 Elixir*
 *.coverdata
+
+# Claude Code
+CLAUDE.md

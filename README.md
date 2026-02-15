@@ -1,13 +1,13 @@
 # Nebulex.Adapters.Cachex
 > A [Nebulex][Nebulex] adapter for [Cachex][Cachex].
 
-[Nebulex]: http://github.com/elixir-nebulex/nebulex
-[Cachex]: http://github.com/whitfin/cachex
+[Nebulex]: https://github.com/elixir-nebulex/nebulex
+[Cachex]: https://github.com/whitfin/cachex
 
-![CI](http://github.com/elixir-nebulex/nebulex_adapters_cachex/workflows/CI/badge.svg)
-[![Codecov](http://codecov.io/gh/elixir-nebulex/nebulex_adapters_cachex/graph/badge.svg)](http://codecov.io/gh/elixir-nebulex/nebulex_adapters_cachex/branch/graph/badge.svg)
-[![Hex Version](http://img.shields.io/hexpm/v/nebulex_adapters_cachex.svg)](http://hex.pm/packages/nebulex_adapters_cachex)
-[![Documentation](http://img.shields.io/badge/Documentation-ff69b4)](http://hexdocs.pm/nebulex_adapters_cachex)
+![CI](https://github.com/elixir-nebulex/nebulex_adapters_cachex/workflows/CI/badge.svg)
+[![Codecov](https://codecov.io/gh/elixir-nebulex/nebulex_adapters_cachex/graph/badge.svg)](https://codecov.io/gh/elixir-nebulex/nebulex_adapters_cachex)
+[![Hex Version](https://img.shields.io/hexpm/v/nebulex_adapters_cachex.svg)](https://hex.pm/packages/nebulex_adapters_cachex)
+[![Documentation](https://img.shields.io/badge/Documentation-ff69b4)](https://hexdocs.pm/nebulex_adapters_cachex)
 
 ## About
 
@@ -22,7 +22,7 @@ Add `:nebulex_adapters_cachex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:nebulex_adapters_cachex, "~> 3.0.0-rc.2"},
+    {:nebulex_adapters_cachex, "~> 3.0"},
     {:telemetry, "~> 0.4 or ~> 1.0"}    # For observability/telemetry support
   ]
 end
@@ -68,8 +68,8 @@ for configuration options including expiration, hooks, limits, and warmers.
 
 For more details and examples, see the [module documentation][docs].
 
-[cachex_start_link]: http://hexdocs.pm/cachex/Cachex.html#start_link/2
-[docs]: http://hexdocs.pm/nebulex_adapters_cachex/Nebulex.Adapters.Cachex.html
+[cachex_start_link]: https://hexdocs.pm/cachex/Cachex.html#start_link/2
+[docs]: https://hexdocs.pm/nebulex_adapters_cachex/Nebulex.Adapters.Cachex.html
 
 ## Distributed Caching Topologies
 
@@ -95,7 +95,7 @@ defmodule MyApp.NearCache do
     use Nebulex.Cache,
       otp_app: :my_app,
       adapter: Nebulex.Adapters.Partitioned,
-      primary_storage_adapter: Nebulex.Adapters.Cachex
+      adapter_opts: [primary_storage_adapter: Nebulex.Adapters.Cachex]
   end
 end
 ```
@@ -115,8 +115,8 @@ You can also use [Nebulex.Adapters.Redis][nbx_redis_adapter] for L2 to add
 persistence. See the [module documentation][docs] and
 [Nebulex examples][nbx_examples] for more topologies.
 
-[nbx_redis_adapter]: http://github.com/elixir-nebulex/nebulex_redis_adapter
-[nbx_examples]: http://github.com/elixir-nebulex/nebulex_examples
+[nbx_redis_adapter]: https://github.com/elixir-nebulex/nebulex_redis_adapter
+[nbx_examples]: https://github.com/elixir-nebulex/nebulex_examples
 
 ## Testing
 
@@ -160,7 +160,7 @@ You will find the coverage report within `cover/excoveralls.html`.
 
 ## Benchmarks
 
-Benchmarks were added using [benchee](http://github.com/PragTob/benchee), and
+Benchmarks were added using [benchee](https://github.com/PragTob/benchee), and
 they are located within the directory [benchmarks](./benchmarks).
 
 To run the benchmarks:
@@ -173,9 +173,9 @@ MIX_ENV=test mix run benchmarks/benchmark.exs
 
 Contributions to Nebulex are very welcome and appreciated!
 
-Use the [issue tracker](http://github.com/elixir-nebulex/nebulex_adapters_cachex/issues)
+Use the [issue tracker](https://github.com/elixir-nebulex/nebulex_adapters_cachex/issues)
 for bug reports or feature requests. Open a
-[pull request](http://github.com/elixir-nebulex/nebulex_adapters_cachex/pulls)
+[pull request](https://github.com/elixir-nebulex/nebulex_adapters_cachex/pulls)
 when you are ready to contribute.
 
 When submitting a pull request you should not update the

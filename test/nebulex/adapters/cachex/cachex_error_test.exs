@@ -1,7 +1,7 @@
 defmodule Nebulex.Adapters.Cachex.CachexErrorTest do
   use ExUnit.Case, async: true
-  use Mimic
 
+  import Mimic, only: [expect: 3, allow: 3, verify_on_exit!: 1]
   import Nebulex.CacheCase, only: [setup_with_dynamic_cache: 2]
   import Nebulex.Utils, only: [wrap_error: 2]
 
@@ -9,6 +9,8 @@ defmodule Nebulex.Adapters.Cachex.CachexErrorTest do
   alias Nebulex.Adapters.Cachex.TestCache.Local, as: Cache
 
   @cache_name __MODULE__.Cachex
+
+  setup :verify_on_exit!
 
   setup_with_dynamic_cache Cache, @cache_name
 
