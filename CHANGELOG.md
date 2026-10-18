@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.1.0](https://github.com/elixir-nebulex/nebulex_adapters_cachex/tree/v3.1.0) (2026-10-18)
+> [Full Changelog](https://github.com/elixir-nebulex/nebulex_adapters_cachex/compare/v3.0.0...v3.1.0)
+
+### Enhancements
+
+- [Nebulex.Adapters.Cachex] Implemented the `Nebulex.Adapter.CompositeKV`
+  behaviour with the default implementation for `get_and_update`, `update`,
+  `fetch_or_store`, and `get_or_store`. Nebulex 3.1 requires it and checks it
+  at compile time, so the `nebulex` requirement is now `~> 3.1`.
+
 ## [v3.0.0](https://github.com/elixir-nebulex/nebulex_adapters_cachex/tree/v3.0.0) (2026-02-21)
 > [Full Changelog](https://github.com/elixir-nebulex/nebulex_adapters_cachex/compare/v3.0.0-rc.2...v3.0.0)
 

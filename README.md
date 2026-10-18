@@ -22,7 +22,7 @@ Add `:nebulex_adapters_cachex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:nebulex_adapters_cachex, "~> 3.0"},
+    {:nebulex_adapters_cachex, "~> 3.1"},
     {:telemetry, "~> 0.4 or ~> 1.0"}    # For observability/telemetry support
   ]
 end
