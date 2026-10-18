@@ -20,10 +20,6 @@ for file <- File.ls!("#{nbx_dep_path}/test/shared"), file != "cache" do
   Code.require_file("#{nbx_dep_path}/test/shared/" <> file, __DIR__)
 end
 
-for file <- File.ls!("test/shared"), not File.dir?("test/shared/" <> file) do
-  Code.require_file("./shared/" <> file, __DIR__)
-end
-
 Code.require_file("support/test_cache.exs", __DIR__)
 
 # Start Telemetry
