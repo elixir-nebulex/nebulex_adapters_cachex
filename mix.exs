@@ -42,7 +42,7 @@ defmodule NebulexAdaptersCachex.MixProject do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test,
-        "test.ci": :test
+        precommit: :test
       ]
     ]
   end
@@ -60,6 +60,7 @@ defmodule NebulexAdaptersCachex.MixProject do
       {:sobelow, "~> 0.14", only: [:dev, :test], runtime: false},
       {:mimic, "~> 2.0", only: :test},
       {:stream_data, "~> 1.2", only: [:dev, :test]},
+      {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
 
       # Benchmark Test
       {:benchee, "~> 1.5", only: [:dev, :test]},
@@ -87,14 +88,16 @@ defmodule NebulexAdaptersCachex.MixProject do
         "cmd rm -rf nebulex",
         "cmd git clone --depth 1 --branch main https://github.com/elixir-nebulex/nebulex"
       ],
-      "test.ci": [
+      precommit: [
         "deps.unlock --check-unused",
+        "deps.audit",
         "compile --warnings-as-errors",
         "format --check-formatted",
         "credo --strict",
         "coveralls.html",
-        "sobelow --exit --skip",
-        "dialyzer --format short"
+        "sobelow --skip --exit Low",
+        "dialyzer --format short",
+        "docs --warnings-as-errors"
       ],
       "ur.sync": ["usage_rules.sync"]
     ]
