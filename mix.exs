@@ -77,7 +77,7 @@ defmodule NebulexAdaptersCachex.MixProject do
     if path = System.get_env("NEBULEX_PATH") do
       {:nebulex, path: path, override: true}
     else
-      {:nebulex, "~> 3.0"}
+      {:nebulex, "~> 3.1"}
     end
   end
 
